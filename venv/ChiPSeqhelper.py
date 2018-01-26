@@ -74,6 +74,7 @@ def main():
     arg_list = sys.argv
     print(arg_list)
     check_args(all_args=arg_list)
+    # Start working with the Pipeline next
 
 
 if __name__ == "__main__":

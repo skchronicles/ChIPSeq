@@ -23,3 +23,6 @@ Input parameters for your script:
 
 You can download the data from here (https://helix.nih.gov/~CCBR/forSkyler/forSkyler.tar) to your laptop.
 You can get this working on your laptop and then we can move it over to biowulf at a later point.
+
+
+Other Notes:
