@@ -74,10 +74,11 @@ def benchmarker(any_function):
 
 def run_shell_commands(parsed_args):  # Change to a class called ChIPSeqPipeline
     """
+    Driver for running shell commands, using yield statements forces asynchronous processing
     :param parsed_args:
     :yeild: command to be executed
     """
-    #yield "hellooooooo"
+
     yield "sort -knr [column_3] OutputofMACSfile | head -n 50 > NewOutputfile.txt"
     yield "call IGV via CLI: use mm10 as ref, use BW normalized files: treatment and control"
     yield "mkdir NAMEofFolder"
