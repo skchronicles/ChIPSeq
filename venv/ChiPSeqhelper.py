@@ -108,13 +108,27 @@ class ChipSeqPipeline(object):
         """
         pass   # Return True: if valid inputs
 
-    def __run(self, command_list):
+    def __run(self, command_list, pipe):
         """
         Private method used to run commands in shell
+        When running pipe="yes", it runs:
+        sort -k9nr,9 CHIP_Thpok_Biotin_vs_Input_Thpok_peaks.narrowPeak | head -50 > outputfile.narrowfile
         :param command_list:
+        :pipe specify whether you want to pipe commands
         :return:
         """
-        sp.Popen(command_list).wait()
+        if pipe == "yes":
+            p1 = sp.Popen(command_list, stdout=sp.PIPE)
+            p2 = sp.Popen("head -50".split(), stdin=p1.stdout, stdout=sp.PIPE)
+            p1.stdout.close()  # Allow p1 to receive a SIGPIPE if p2 exits.
+            output = p2.communicate()[0]
+
+            fh = open("CHIP_Thpok_Biotin_vs_Input_Thpok_peaks_SORTEDqValue_TOP50.narrowPeak", "w")
+            fh.write(output)
+            fh.close()
+
+        elif pipe == "no":
+            sp.Popen(command_list).wait()
 
     def run(self):
         """
@@ -123,11 +137,11 @@ class ChipSeqPipeline(object):
         :return: Output folder with IGv N-peaks results
         """
         self.validate()
-        self.__run("echo sort -knr [column_3] OutputofMACSfile | head -n 50 > NewOutputfile.txt".split())
-        self.__run("echo call IGV via CLI: use mm10 as ref, use BW normalized files: treatment and control".split())
-        self.__run("echo mkdir NAMEofFolder".split())
-        self.__run("echo Loop through N peaks from IGV output and mv snapshots to NAMEofFolder".split())
-        self.__run("echo Clean up the directory as needed-- rm any un-needed files!".split())
+        self.__run("sort -k9nr,9 CHIP_Thpok_Biotin_vs_Input_Thpok_peaks.narrowPeak".split(), "yes")
+        #self.__run("echo call IGV via CLI: use mm10 as ref, use BW normalized files: treatment and control".split())
+        #self.__run("echo mkdir NAMEofFolder".split())
+        #self.__run("echo Loop through N peaks from IGV output and mv snapshots to NAMEofFolder".split())
+        #self.__run("echo Clean up the directory as needed-- rm any un-needed files!".split())
 
     def __str__(self):
         return "Parameters: {}".format(self.args_dict)
