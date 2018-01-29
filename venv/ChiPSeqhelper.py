@@ -85,6 +85,53 @@ def run_shell_commands(parsed_args):  # Change to a class called ChIPSeqPipeline
     yield "Clean up the directory as needed-- rm any un-needed files!"
 
 
+class ChipSeqPipeline(object):
+    """
+    Takes dictionary of validated arguments from check_args, sorts & selects MAC CLT output, and then calls IGV CLT
+    """
+    def __init__(self, args_dict):
+        # Attributes
+        self.args_dict = args_dict
+        self.n = args_dict['n']                             # change this so it is not so hard-coded
+        self.narrow_peaks = args_dict['narrowPeak_file']    # change this so it is not so hard-coded
+        self.treatment_bw = args_dict['treatment_bw_file']  # change this so it is not so hard-coded
+        self.input_bw = args_dict['input_bw_file']          # change this so it is not so hard-coded
+        self.output_folder = args_dict['output_folder']     # change this so it is not so hard-coded
+        # Methods
+        self.run()
+
+    def validate(self):   # insert check_args code into here
+        """
+        takes a list of __init__ attributes
+        :return: boolean
+        """
+        pass   # Return True: if valid inputs
+
+    def __run(self, command_list):
+        """
+        Private method used to run commands in shell
+        :param command_list:
+        :return:
+        """
+        sp.Popen(command_list).wait()
+
+    def run(self):
+        """
+        Sorts the Output of MACS (by decreasing q-value) & selects tops 'n' results
+        calls IGV CLT, loops through results -> saves screenshots to an Output folder
+        :return: Output folder with IGv N-peaks results
+        """
+        self.validate()
+        self.__run("echo sort -knr [column_3] OutputofMACSfile | head -n 50 > NewOutputfile.txt".split())
+        self.__run("echo call IGV via CLI: use mm10 as ref, use BW normalized files: treatment and control".split())
+        self.__run("echo mkdir NAMEofFolder".split())
+        self.__run("echo Loop through N peaks from IGV output and mv snapshots to NAMEofFolder".split())
+        self.__run("echo Clean up the directory as needed-- rm any un-needed files!".split())
+
+    def __str__(self):
+        return "Parameters: {}".format(self.args_dict)
+
+
 def main():
     """
     Pseudo-main method
@@ -97,8 +144,11 @@ def main():
     print(args_dict)
 
     # Start working with interfacing into the Pipeline
-    for command in run_shell_commands(parsed_args=args_dict):
-        sp.Popen("echo {}".format(command).split()).wait()  # Popen takes a list as parameter
+    #for command in run_shell_commands(parsed_args=args_dict):
+    #    sp.Popen("echo {}".format(command).split()).wait()  # Popen takes a list as parameter
+
+    useChIPSeq = ChipSeqPipeline(args_dict)
+    print(useChIPSeq)
 
 
 if __name__ == "__main__":
