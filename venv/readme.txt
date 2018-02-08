@@ -20,9 +20,11 @@
 -- treatment_bw_file
 -- input_bw_file
 -- output_folder
+-- reference_genome
 
 You can download the data from here (https://helix.nih.gov/~CCBR/forSkyler/forSkyler.tar) to your laptop.
 You can get this working on your laptop and then we can move it over to biowulf at a later point.
+
 
 # Other Notes:
 ==============
@@ -42,3 +44,18 @@ This format is used to provide called peaks of signal enrichment based on pooled
 8)  pValue - Measurement of statistical significance (-log10). Use -1 if no pValue is assigned.
 9)  qValue - Measurement of statistical significance using false discovery rate (-log10). Use -1 if no qValue is assigned.
 10) peak - Point-source called for this peak; 0-based offset from chromStart. Use -1 if no point-source called
+
+
+
+# Example of IGV Batch Script:
+==============================
+new
+snapshotDirectory IGV_Snapshots
+load test_alignments.bam
+genome hg19
+maxPanelHeight 500
+goto chr1:713167-714758
+snapshot chr1_713167_714758_h500.png
+goto chr1:713500-714900
+snapshot chr1_713500_714900_h500.png
+exit
